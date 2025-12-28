@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ASV Data Manager - Ultimate Pro</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap');
+:root {
+    --primary-grad: linear-gradient(135deg, #11ede6 0%, #d544ef 100%);
+    --sidebar-grad: linear-gradient(180deg, #0f172a 0%, #1e293b 100%);
+    --body-grad: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    --sidebar-w: 290px;
+}
+body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--body-grad); background-attachment: fixed; color: #ffffff; overflow-x: hidden; }
+.brand-title { font-size: 2.3rem; font-weight: 800; background: var(--primary-grad); -webkit-background-clip: text; -webkit-text-fill-color: transparent; cursor: pointer; }
+.btn-premium { transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); cursor: pointer; border:none; outline:none; }
+.btn-premium:active { transform: scale(0.9); }
+.sidebar { position: fixed; top: 0; left: 0; height: 100vh; width: var(--sidebar-w); background: var(--sidebar-grad); border-right: 1px solid rgba(255,255,255,0.1); transition: 0.5s; z-index: 2000; box-shadow: 20px 0 50px rgba(0,0,0,0.3); }
+.mobile-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 1500; display: none; backdrop-filter: blur(5px); }
+@media (max-width: 768px) {
+    .main-content { margin-left: 0 !important; width: 100%; }
+    .sidebar { transform: translateX(-100%); }
+    .sidebar.show { transform: translateX(0); }
+    .sidebar.show ~ .mobile-overlay { display: block; }
+}
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 25px; padding: 20px; }
+.vibrant-card { background: rgba(255, 255, 255, 0.15); border-radius: 30px; padding: 30px; border: 1px solid rgba(255,255,255,0.2); backdrop-filter: blur(10px); transition: 0.4s; }
+.vibrant-card:hover { transform: translateY(-10px) rotate(1deg); background: rgba(255,255,255,0.25); }
+.nav-link { display: flex; align-items: center; padding: 1.2rem 1.5rem; color: #cbd5e1; font-weight: 700; border-radius: 20px; margin: 10px 15px; transition: 0.3s; text-decoration: none; }
+.nav-link:hover { background: rgba(255,255,255,0.05); color: white; }
+.nav-link.active { background: var(--primary-grad); color: white !important; }
+.directory-card { background: rgba(0, 0, 0, 0.3); padding: 15px 25px; border-radius: 20px; display: flex; align-items: center; gap: 15px; border: 1px solid rgba(255,255,255,0.1); }
+#fetchingLoader { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.9); display: none; flex-direction: column; align-items: center; justify-content: center; z-index: 9999; }
+.hidden { display: none !important; }
+.login-card { background: rgba(255, 255, 255, 0.95); border-radius: 40px; padding: 3.5rem; width: 100%; max-width: 450px; color: #1e293b; }
+</style>
+</head>
+
+<body>
+
+<div id="fetchingLoader">
+    <div class="spinner-border text-info" style="width: 3.5rem; height: 3.5rem;"></div>
+    <h5 class="mt-4 font-bold tracking-widest text-white">SYNCING SYSTEM...</h5>
+</div>
+
+<!-- LOGIN SCREEN -->
+<div id="loginScreen" class="hidden" style="min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 2rem;">
+    <div class="login-card shadow-2xl">
+        <div class="w-20 h-20 bg-slate-900 rounded-3xl flex items-center justify-center text-info text-4xl mx-auto mb-6">
+            <i class="fas fa-fingerprint"></i>
+        </div>
+        <h1 class="text-3xl font-black mb-2 text-center">DATA MANAGER</h1>
+        <form id="loginForm">
+            <div class="mb-4"><label class="font-bold text-sm ml-1">USERNAME</label><input type="text" id="username" class="form-control rounded-2xl p-3 border-2" required></div>
+            <div class="mb-5"><label class="font-bold text-sm ml-1">SECURITY KEY</label><input type="password" id="password" class="form-control rounded-2xl p-3 border-2" required></div>
+            <button type="submit" class="btn-premium w-100 py-3 text-white font-bold rounded-2xl shadow-xl" style="background: var(--primary-grad);">SIGN IN SYSTEM</button>
+        </form>
+    </div>
+</div>
+
+<!-- DASHBOARD -->
+<div id="dashboard" class="hidden">
+    <div class="mobile-header d-md-none p-3 border-bottom flex justify-between items-center sticky top-0 z-50 shadow-lg" style="background: rgba(15, 23, 42, 0.8); backdrop-filter: blur(10px);">
+        <button class="btn p-0 text-info" onclick="toggleSidebar()"><i class="fas fa-bars-staggered fs-1"></i></button>
+        <span class="brand-title" style="font-size: 1.8rem;" onclick="showSection('overview')">DATA SYSTEM</span>
+        <button class="btn text-danger p-0" onclick="logout()"><i class="fas fa-power-off fs-2"></i></button>
+    </div>
+
+    <div class="mobile-overlay" id="mobileOverlay" onclick="toggleSidebar()"></div>
+
+    <div class="sidebar" id="sidebar">
+        <div class="p-10 text-center"><h1 class="brand-title" onclick="showSection('overview')">MR DATA</h1></div>
+        <div class="px-3">
+            <div class="p-4 rounded-3xl bg-white/5 border border-white/10 text-center mb-6">
+                <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">OPERATOR</p>
+                <h6 class="m-0 font-extrabold text-white" id="sideUser">...</h6>
+                <span class="badge bg-info mt-2 px-3 py-2" id="sideRole">...</span>
+            </div>
+            <nav>
+                <a href="#" class="nav-link active" id="nav-home" onclick="showSection('overview', this)"><i class="fas fa-th-large me-3"></i>Dashboard</a>
+                <div id="adminPanel" class="hidden">
+                    <a href="#" class="nav-link" onclick="showSection('add-data', this)"><i class="fas fa-plus-circle me-3"></i>Add Record</a>
+                    <a href="#" class="nav-link" onclick="showSection('list-data', this)"><i class="fas fa-sliders-h me-3"></i>Management</a>
+                </div>
+            </nav>
+            <div class="mt-10 px-3"><button class="btn-premium w-100 py-3 rounded-2xl bg-rose-500/20 text-rose-400 font-bold border border-rose-500/30" onclick="logout()">TERMINATE</button></div>
+        </div>
+    </div>
+
+    <div class="main-content" style="margin-left: var(--sidebar-w); transition: 0.5s;">
+        <div class="p-4 flex flex-col md:flex-row justify-between items-center mb-6 pt-4">
+            <div class="directory-card shadow-lg">
+                <h1 class="text-xl md:text-3xl font-black text-white m-0 uppercase" id="activeSheetLabel">...</h1>
+            </div>
+            <button class="btn-premium d-none d-md-block px-8 py-3 text-white font-bold rounded-2xl shadow-lg border-0" style="background: var(--primary-grad)" onclick="refresh()">REFRESH DATABASE</button>
+        </div>
+
+        <div class="content-area">
+            <div id="overview" class="section-content">
+                <div id="bookGrid" class="grid"></div>
+                <div id="showAllContainer" class="text-center mt-10 hidden">
+                    <button class="btn-premium px-10 py-3 bg-white/10 text-white font-bold rounded-2xl border border-white/20" onclick="toggleShowAll()">LOAD ALL RECORDS</button>
+                </div>
+            </div>
+
+            <div id="add-data" class="section-content hidden p-3">
+                <div class="max-w-3xl mx-auto p-8 rounded-[40px] bg-white text-dark shadow-2xl">
+                    <h2 class="text-2xl font-black mb-6 border-b pb-4">New System Entry</h2>
+                    <form id="dataForm" class="row g-4 text-dark">
+                        <div class="col-md-6"><label class="font-bold">Serial ID</label><input type="text" id="sn" class="form-control rounded-xl p-3 bg-slate-100" required></div>
+                        <div class="col-md-6"><label class="font-bold">Full Name</label><input type="text" id="nm" class="form-control rounded-xl p-3 bg-slate-100" required></div>
+                        <div class="col-md-6"><label class="font-bold">Email Address</label><input type="email" id="em" class="form-control rounded-xl p-3 bg-slate-100" required></div>
+                        <div class="col-md-6"><label class="font-bold">Phone Number</label><input type="text" id="ph" class="form-control rounded-xl p-3 bg-slate-100" required></div>
+                        <div class="col-md-12"><label class="font-bold">Resource URL</label><input type="url" id="ur" class="form-control rounded-xl p-3 bg-slate-100" required></div>
+                        <button type="submit" class="btn-premium w-100 py-3 text-white font-bold rounded-2xl border-0 mt-4 shadow-lg" style="background: var(--primary-grad)">COMMIT TO SERVER</button>
+                    </form>
+                </div>
+            </div>
+
+            <div id="list-data" class="section-content hidden p-3">
+                <div class="p-6 rounded-[35px] bg-white/10 border border-white/20 backdrop-blur shadow-sm">
+                    <div class="flex justify-between items-center mb-6">
+                        <h4 class="font-extrabold text-white m-0 uppercase text-xs">System Control Logs</h4>
+                        <button class="btn-premium bg-white/10 text-white px-4 py-2 rounded-xl border border-white/20" onclick="showSheetsModal()">SELECT PAGE</button>
+                    </div>
+                    <div id="listContainer"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<button id="mobileRefreshBtn" class="fixed bottom-6 right-6 w-16 h-16 bg-white/20 text-white rounded-full flex items-center justify-center btn-premium d-md-none z-[1000] border border-white/30 backdrop-blur hidden" onclick="refresh()">
+    <i class="fas fa-sync-alt fs-3"></i>
+</button>
+
+<!-- EDIT MODAL -->
+<div class="modal fade" id="editModal" tabindex="-1">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content border-0 shadow-2xl rounded-[40px] p-8 bg-white text-dark">
+            <h4 class="font-bold mb-6 text-dark border-b pb-3">Update Record Details</h4>
+            <input type="hidden" id="editRowId">
+            <div class="row g-3">
+                <div class="col-md-6"><input type="text" id="esn" class="form-control rounded-xl bg-slate-100" placeholder="Serial"></div>
+                <div class="col-md-6"><input type="text" id="enm" class="form-control rounded-xl bg-slate-100" placeholder="Name"></div>
+                <div class="col-md-6"><input type="email" id="eem" class="form-control rounded-xl bg-slate-100" placeholder="Email"></div>
+                <div class="col-md-6"><input type="text" id="eph" class="form-control rounded-xl bg-slate-100" placeholder="Phone"></div>
+                <div class="col-md-12"><input type="url" id="eur" class="form-control rounded-xl bg-slate-100" placeholder="URL"></div>
+            </div>
+            <div class="mt-8 flex gap-3">
+                <button class="btn-premium flex-grow py-3 text-white font-bold rounded-2xl" style="background: var(--primary-grad)" onclick="updateEntry()">SAVE</button>
+                <button class="btn btn-light px-8 rounded-2xl font-bold" data-bs-dismiss="modal">CLOSE</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // আপনার Web App URL এখানে দিন
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwHNpweNP291S_JB4W0NpRyB7ZYgZJaLeuRrxUaAVki_rDKdNz05853ChkM61cJR1dh/exec";
+    
+    let allData = [];
+    let isShowingAll = false;
+    let userData = null;
+    let activeSheet = null;
+    const AUTH_KEY = 'asv_pro_v105';
+
+    // ব্যাকেন্ডের সাথে কথা বলার জন্য মেইন ফাংশন
+    async function runGAS(action, payload = {}) {
+        try {
+            const response = await fetch(SCRIPT_URL, {
+                method: 'POST',
+                body: JSON.stringify({ action, payload })
+            });
+            return await response.json();
+        } catch (err) {
+            console.error(err);
+            return { success: false, message: "Network Error" };
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => checkAuth());
+
+    function checkAuth() {
+        const saved = localStorage.getItem(AUTH_KEY);
+        if(saved) {
+            userData = JSON.parse(saved);
+            activeSheet = (userData.role === 'ALL') ? (activeSheet || 'Upload') : userData.page;
+            document.getElementById('dashboard').classList.remove('hidden');
+            document.getElementById('loginScreen').classList.add('hidden');
+            document.getElementById('mobileRefreshBtn').classList.remove('hidden');
+            document.getElementById('sideUser').textContent = userData.username;
+            document.getElementById('sideRole').textContent = userData.role;
+            document.getElementById('activeSheetLabel').textContent = activeSheet;
+            document.getElementById('adminPanel').classList.toggle('hidden', userData.role !== 'ALL');
+            refresh();
+        } else {
+            document.getElementById('loginScreen').classList.remove('hidden');
+            document.getElementById('dashboard').classList.add('hidden');
+            document.getElementById('mobileRefreshBtn').classList.add('hidden');
+        }
+    }
+
+    function logout() {
+        Swal.fire({title: 'Sign Out?', icon: 'warning', showCancelButton: true}).then(r => {
+            if(r.isConfirmed) { localStorage.removeItem(AUTH_KEY); checkAuth(); }
+        });
+    }
+
+    function toggleSidebar() { document.getElementById('sidebar').classList.toggle('show'); }
+
+    function showSection(id, el) {
+        if(id === 'overview') isShowingAll = false;
+        document.querySelectorAll('.section-content').forEach(s => s.classList.add('hidden'));
+        document.getElementById(id).classList.remove('hidden');
+        document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+        if(el) el.classList.add('active');
+        if(id === 'list-data') fetchData();
+        if(window.innerWidth < 768) document.getElementById('sidebar').classList.remove('show');
+    }
+
+    async function refresh() {
+        document.getElementById('fetchingLoader').style.display = 'flex';
+        const data = await runGAS('getBooks', { sheetName: activeSheet });
+        allData = data || [];
+        renderGrid();
+        document.getElementById('fetchingLoader').style.display = 'none';
+    }
+
+    function renderGrid() {
+        const grid = document.getElementById('bookGrid');
+        const displayData = isShowingAll ? allData : allData.slice(0, 3);
+        grid.innerHTML = displayData.map(b => `
+            <div class="vibrant-card relative">
+                <div onclick="copyToClipboard('${b.dataUrl}')" class="absolute top-4 right-4 w-10 h-10 bg-white/20 hover:bg-white/40 flex items-center justify-center rounded-xl cursor-pointer text-white">
+                    <i class="fas fa-copy"></i>
+                </div>
+                <h4 class="text-2xl font-extrabold text-white mb-4 pr-10">${b.name}</h4>
+                <div class="text-sm font-bold text-indigo-100 space-y-2 mb-6">
+                    <p class="m-0"><i class="fas fa-fingerprint me-2"></i>${b.serialNo}</p>
+                    <p class="m-0"><i class="fas fa-envelope me-2"></i>${b.email}</p>
+                    <p class="m-0"><i class="fas fa-phone me-2"></i>${b.phone}</p>
+                </div>
+                <a href="${b.dataUrl}" target="_blank" class="btn-premium w-100 py-3 rounded-2xl bg-white text-indigo-900 font-bold text-center block no-underline shadow-lg">OPEN RECORD</a>
+            </div>
+        `).join('') || '<div class="p-10 text-center text-white/50">NO DATA FOUND</div>';
+        document.getElementById('showAllContainer').classList.toggle('hidden', allData.length <= 3 || isShowingAll);
+    }
+
+    function toggleShowAll() { isShowingAll = true; renderGrid(); }
+
+    async function fetchData() {
+        document.getElementById('fetchingLoader').style.display = 'flex';
+        const res = await runGAS('getDataList', { sheetName: activeSheet });
+        const container = document.getElementById('listContainer');
+        container.innerHTML = res.data.map(d => `
+            <div class="p-4 bg-white/5 rounded-2xl mb-3 flex flex-col md:flex-row justify-between items-center border border-white/10">
+                <div class="text-center md:text-left mb-3 md:mb-0">
+                    <h6 class="m-0 font-extrabold text-white">${d.name}</h6>
+                    <span class="text-xs text-white/40">${d.email}</span>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="toggleEye(${d.rowId}, '${d.visibility}')" class="btn-premium px-3 py-2 ${d.visibility === 'V' ? 'bg-emerald-500' : 'bg-white/10'} rounded-xl"><i class="fas ${d.visibility === 'V' ? 'fa-eye' : 'fa-eye-slash'}"></i></button>
+                    <button onclick="editEntry(${d.rowId})" class="btn-premium bg-blue-500 text-white px-3 py-2 rounded-xl"><i class="fas fa-edit"></i></button>
+                    <button onclick="deleteEntry(${d.rowId})" class="btn-premium bg-rose-500 text-white px-3 py-2 rounded-xl"><i class="fas fa-trash"></i></button>
+                </div>
+            </div>
+        `).join('') || '<div class="p-10 text-center">DIRECTORY EMPTY</div>';
+        document.getElementById('fetchingLoader').style.display = 'none';
+    }
+
+    async function toggleEye(id, status) { 
+        await runGAS('toggleVisibility', { rowId: id, sheetName: activeSheet, status });
+        fetchData(); refresh(); 
+    }
+
+    async function editEntry(id) { 
+        const res = await runGAS('getDataById', { rowId: id, sheetName: activeSheet });
+        const d = res.data;
+        document.getElementById('editRowId').value = d.rowId;
+        document.getElementById('esn').value = d.serialNo;
+        document.getElementById('enm').value = d.name;
+        document.getElementById('eem').value = d.email;
+        document.getElementById('eph').value = d.phone;
+        document.getElementById('eur').value = d.dataUrl;
+        new bootstrap.Modal(document.getElementById('editModal')).show();
+    }
+
+    async function updateEntry() {
+        const obj = { 
+            rowId: document.getElementById('editRowId').value, 
+            serialNo: document.getElementById('esn').value, 
+            name: document.getElementById('enm').value, 
+            email: document.getElementById('eem').value, 
+            phone: document.getElementById('eph').value, 
+            dataUrl: document.getElementById('eur').value 
+        };
+        await runGAS('updateData', { obj, sheetName: activeSheet });
+        bootstrap.Modal.getInstance(document.getElementById('editModal')).hide();
+        fetchData(); refresh();
+    }
+
+    async function deleteEntry(id) {
+        const r = await Swal.fire({title:'Erase Data?', icon:'warning', showCancelButton:true});
+        if(r.isConfirmed) {
+            await runGAS('deleteData', { rowId: id, sheetName: activeSheet });
+            fetchData(); refresh();
+        }
+    }
+
+    async function showSheetsModal() {
+        const sheets = await runGAS('getAllSheets');
+        let html = `<div class="grid gap-2">` + sheets.map(s => `<button onclick="switchSheet('${s}')" class="btn-premium w-100 p-3 bg-white/10 text-white rounded-2xl font-bold">${s}</button>`).join('') + `</div>`;
+        Swal.fire({title: 'SELECT TABLE', html: html, showConfirmButton: false, background: '#1e293b', color: '#fff'});
+    }
+
+    function switchSheet(name) { activeSheet = name; document.getElementById('activeSheetLabel').textContent = activeSheet; Swal.close(); refresh(); if(!document.getElementById('list-data').classList.contains('hidden')) fetchData(); }
+
+    document.getElementById('loginForm').onsubmit = async (e) => {
+        e.preventDefault();
+        Swal.fire({title: 'Accessing...', didOpen: () => Swal.showLoading()});
+        const res = await runGAS('authenticate', { 
+            username: document.getElementById('username').value, 
+            password: document.getElementById('password').value 
+        });
+        if(res.success) { localStorage.setItem(AUTH_KEY, JSON.stringify(res)); checkAuth(); Swal.close(); }
+        else Swal.fire('Error', res.message, 'error');
+    };
+
+    document.getElementById('dataForm').onsubmit = async (e) => {
+        e.preventDefault();
+        const obj = { 
+            serialNo: document.getElementById('sn').value, 
+            name: document.getElementById('nm').value, 
+            email: document.getElementById('em').value, 
+            phone: document.getElementById('ph').value, 
+            dataUrl: document.getElementById('ur').value 
+        };
+        await runGAS('addData', { obj, sheetName: activeSheet });
+        Swal.fire({icon:'success', title:'Success!', timer:800, showConfirmButton:false});
+        document.getElementById('dataForm').reset();
+        refresh();
+    };
+
+    function copyToClipboard(text) {
+        navigator.clipboard.writeText(text).then(() => {
+            Swal.fire({icon:'success', title:'Copied!', timer:1000, showConfirmButton:false, background:'#1e293b', color:'#fff'});
+        });
+    }
+</script>
+</body>
+</html>
