@@ -56,9 +56,10 @@ body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--body-grad
             <i class="fas fa-fingerprint"></i>
         </div>
         <h1 class="text-3xl font-black mb-2 text-center">DATA MANAGER</h1>
+         <p class="text-slate-500 mb-8 text-center font-bold">Secure Access Portal</p>
         <form id="loginForm">
-            <div class="mb-4"><label class="font-bold text-sm ml-1">USERNAME</label><input type="text" id="username" class="form-control rounded-2xl p-3 border-2" required></div>
-            <div class="mb-5"><label class="font-bold text-sm ml-1">SECURITY KEY</label><input type="password" id="password" class="form-control rounded-2xl p-3 border-2" required></div>
+            <div class="mb-4"><label class="font-bold text-sm ml-1">USERNAME 👤</label><input type="text" id="username" class="form-control rounded-2xl p-3 border-2" placeholder="👤 Enter ID" required></div>
+            <div class="mb-5"><label class="font-bold text-sm ml-1">SECURITY KEY 🔑</label><input type="password" id="password" class="form-control rounded-2xl p-3 border-2" placeholder="🔑 Enter Security Key"  required></div>
             <button type="submit" class="btn-premium w-100 py-3 text-white font-bold rounded-2xl shadow-xl" style="background: var(--primary-grad);">SIGN IN SYSTEM</button>
         </form>
     </div>
@@ -89,7 +90,7 @@ body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--body-grad
                     <a href="#" class="nav-link" onclick="showSection('list-data', this)"><i class="fas fa-sliders-h me-3"></i>Management</a>
                 </div>
             </nav>
-            <div class="mt-10 px-3"><button class="btn-premium w-100 py-3 rounded-2xl bg-rose-500/20 text-rose-400 font-bold border border-rose-500/30" onclick="logout()">TERMINATE</button></div>
+            <div class="mt-10 px-3"><button class="btn-premium w-100 py-3 rounded-2xl bg-rose-500/20 text-rose-400 font-bold border border-rose-500/30" onclick="logout()">SIGN OUT</button></div>
         </div>
     </div>
 
