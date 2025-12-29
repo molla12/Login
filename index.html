@@ -1,4 +1,3 @@
-<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -11,39 +10,95 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap');
+
 :root {
     --primary-grad: linear-gradient(135deg, #11ede6 0%, #d544ef 100%);
     --sidebar-grad: linear-gradient(180deg, #0f172a 0%, #1e293b 100%);
-    --body-grad: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    --body-grad: linear-gradient(135deg, #667eea 0%, #764ba2 100%); /* রেনডম ভাইব্রেন্ট ব্যাকগ্রাউন্ড */
     --sidebar-w: 290px;
 }
-body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--body-grad); background-attachment: fixed; color: #ffffff; overflow-x: hidden; }
-.brand-title { font-size: 2.3rem; font-weight: 800; background: var(--primary-grad); -webkit-background-clip: text; -webkit-text-fill-color: transparent; cursor: pointer; }
+
+body { 
+    font-family: 'Plus Jakarta Sans', sans-serif; 
+    background: var(--body-grad);
+    background-attachment: fixed;
+    color: #ffffff;
+    overflow-x: hidden; 
+}
+
+/* --- DATA MANAGER Title --- */
+.brand-title {
+    font-size: 2.3rem;
+    font-weight: 800;
+    background: var(--primary-grad);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    cursor: pointer;
+}
+
+/* --- Advanced Click Animation --- */
 .btn-premium { transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); cursor: pointer; border:none; outline:none; }
 .btn-premium:active { transform: scale(0.9); }
-.sidebar { position: fixed; top: 0; left: 0; height: 100vh; width: var(--sidebar-w); background: var(--sidebar-grad); border-right: 1px solid rgba(255,255,255,0.1); transition: 0.5s; z-index: 2000; box-shadow: 20px 0 50px rgba(0,0,0,0.3); }
-.mobile-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 1500; display: none; backdrop-filter: blur(5px); }
+
+/* --- New Sidebar View --- */
+.sidebar { 
+    position: fixed; top: 0; left: 0; height: 100vh; width: var(--sidebar-w); 
+    background: var(--sidebar-grad); border-right: 1px solid rgba(255,255,255,0.1); 
+    transition: 0.5s cubic-bezier(0.68, -0.55, 0.27, 1.55); z-index: 2000;
+    box-shadow: 20px 0 50px rgba(0,0,0,0.3);
+}
+.mobile-overlay { 
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+    background: rgba(0,0,0,0.6); z-index: 1500; display: none; backdrop-filter: blur(5px);
+}
+
 @media (max-width: 768px) {
     .main-content { margin-left: 0 !important; width: 100%; }
     .sidebar { transform: translateX(-100%); }
     .sidebar.show { transform: translateX(0); }
     .sidebar.show ~ .mobile-overlay { display: block; }
 }
+
+/* --- Unique Card Design --- */
 .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 25px; padding: 20px; }
-.vibrant-card { background: rgba(255, 255, 255, 0.15); border-radius: 30px; padding: 30px; border: 1px solid rgba(255,255,255,0.2); backdrop-filter: blur(10px); transition: 0.4s; }
+.vibrant-card { 
+    background: rgba(255, 255, 255, 0.15); 
+    border-radius: 30px; padding: 30px; 
+    border: 1px solid rgba(255,255,255,0.2); 
+    backdrop-filter: blur(10px);
+    transition: 0.4s;
+}
 .vibrant-card:hover { transform: translateY(-10px) rotate(1deg); background: rgba(255,255,255,0.25); }
-.nav-link { display: flex; align-items: center; padding: 1.2rem 1.5rem; color: #cbd5e1; font-weight: 700; border-radius: 20px; margin: 10px 15px; transition: 0.3s; text-decoration: none; }
+
+/* --- Navigation --- */
+.nav-link { 
+    display: flex; align-items: center; padding: 1.2rem 1.5rem; color: #cbd5e1; 
+    font-weight: 700; border-radius: 20px; margin: 10px 15px; transition: 0.3s;
+}
 .nav-link:hover { background: rgba(255,255,255,0.05); color: white; }
-.nav-link.active { background: var(--primary-grad); color: white !important; }
-.directory-card { background: rgba(0, 0, 0, 0.3); padding: 15px 25px; border-radius: 20px; display: flex; align-items: center; gap: 15px; border: 1px solid rgba(255,255,255,0.1); }
+.nav-link.active { background: var(--primary-grad); color: white !important; box-shadow: 0 10px 20px rgba(0,0,0,0.2); }
+
+/* --- Directory Info Card --- */
+.directory-card {
+    background: rgba(0, 0, 0, 0.3); padding: 15px 25px; border-radius: 20px;
+    display: flex; align-items: center; gap: 15px; border: 1px solid rgba(255,255,255,0.1);
+}
+
 #fetchingLoader { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.9); display: none; flex-direction: column; align-items: center; justify-content: center; z-index: 9999; }
 .hidden { display: none !important; }
+
+/* Login Box Fix */
 .login-card { background: rgba(255, 255, 255, 0.95); border-radius: 40px; padding: 3.5rem; width: 100%; max-width: 450px; color: #1e293b; }
+
+
+
+
 </style>
 </head>
 
 <body>
 
+<!-- FETCHING LOADER -->
 <div id="fetchingLoader">
     <div class="spinner-border text-info" style="width: 3.5rem; height: 3.5rem;"></div>
     <h5 class="mt-4 font-bold tracking-widest text-white">SYNCING SYSTEM...</h5>
@@ -56,7 +111,7 @@ body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--body-grad
             <i class="fas fa-fingerprint"></i>
         </div>
         <h1 class="text-3xl font-black mb-2 text-center">DATA MANAGER</h1>
-         <p class="text-slate-500 mb-8 text-center font-bold">Secure Access Portal</p>
+        <p class="text-slate-500 mb-8 text-center font-bold">Secure Access Portal</p>
         <form id="loginForm">
             <div class="mb-4"><label class="font-bold text-sm ml-1">USERNAME 👤</label><input type="text" id="username" class="form-control rounded-2xl p-3 border-2" placeholder="👤 Enter ID" required></div>
             <div class="mb-5"><label class="font-bold text-sm ml-1">SECURITY KEY 🔑</label><input type="password" id="password" class="form-control rounded-2xl p-3 border-2" placeholder="🔑 Enter Security Key"  required></div>
@@ -67,22 +122,29 @@ body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--body-grad
 
 <!-- DASHBOARD -->
 <div id="dashboard" class="hidden">
+    <!-- Mobile Header -->
     <div class="mobile-header d-md-none p-3 border-bottom flex justify-between items-center sticky top-0 z-50 shadow-lg" style="background: rgba(15, 23, 42, 0.8); backdrop-filter: blur(10px);">
         <button class="btn p-0 text-info" onclick="toggleSidebar()"><i class="fas fa-bars-staggered fs-1"></i></button>
         <span class="brand-title" style="font-size: 1.8rem;" onclick="showSection('overview')">DATA SYSTEM</span>
         <button class="btn text-danger p-0" onclick="logout()"><i class="fas fa-power-off fs-2"></i></button>
     </div>
 
+    <!-- Mobile Overlay -->
     <div class="mobile-overlay" id="mobileOverlay" onclick="toggleSidebar()"></div>
 
+    <!-- Sidebar -->
     <div class="sidebar" id="sidebar">
-        <div class="p-10 text-center"><h1 class="brand-title" onclick="showSection('overview')">MR DATA</h1></div>
+        <div class="absolute top-5 right-5 d-md-none text-white fs-3 cursor-pointer" onclick="toggleSidebar()"><i class="fas fa-times-circle"></i></div>
+        <div class="p-10 text-center">
+            <h1 class="brand-title" onclick="showSection('overview')">MR DATA</h1>
+        </div>
         <div class="px-3">
-            <div class="p-4 rounded-3xl bg-white/5 border border-white/10 text-center mb-6">
+            <div class="p-4 rounded-3xl bg-white/5 border border-white/10 text-center mb-6 shadow-inner">
                 <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">OPERATOR</p>
                 <h6 class="m-0 font-extrabold text-white" id="sideUser">...</h6>
                 <span class="badge bg-info mt-2 px-3 py-2" id="sideRole">...</span>
             </div>
+            
             <nav>
                 <a href="#" class="nav-link active" id="nav-home" onclick="showSection('overview', this)"><i class="fas fa-th-large me-3"></i>Dashboard</a>
                 <div id="adminPanel" class="hidden">
@@ -90,26 +152,39 @@ body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--body-grad
                     <a href="#" class="nav-link" onclick="showSection('list-data', this)"><i class="fas fa-sliders-h me-3"></i>Management</a>
                 </div>
             </nav>
-            <div class="mt-10 px-3"><button class="btn-premium w-100 py-3 rounded-2xl bg-rose-500/20 text-rose-400 font-bold border border-rose-500/30" onclick="logout()">SIGN OUT</button></div>
+
+            <div class="mt-10 px-3">
+                <button class="btn-premium w-100 py-3 rounded-2xl bg-rose-500/20 text-rose-400 font-bold border border-rose-500/30" onclick="logout()">
+                    <i class="fas fa-sign-out-alt me-2"></i> TERMINATE SESSION
+                </button>
+            </div>
         </div>
     </div>
 
+    <!-- Main Content Area -->
     <div class="main-content" style="margin-left: var(--sidebar-w); transition: 0.5s;">
         <div class="p-4 flex flex-col md:flex-row justify-between items-center mb-6 pt-4">
             <div class="directory-card shadow-lg">
+                <span class="text-xs font-bold text-indigo-300 uppercase tracking-widest border-r border-white/20 pr-3">Current Page</span>
                 <h1 class="text-xl md:text-3xl font-black text-white m-0 uppercase" id="activeSheetLabel">...</h1>
             </div>
-            <button class="btn-premium d-none d-md-block px-8 py-3 text-white font-bold rounded-2xl shadow-lg border-0" style="background: var(--primary-grad)" onclick="refresh()">REFRESH DATABASE</button>
+            <button class="btn-premium d-none d-md-block px-8 py-3 text-white font-bold rounded-2xl shadow-lg border-0" style="background: var(--primary-grad)" onclick="refresh()">
+                <i class="fas fa-sync-alt me-2"></i> REFRESH DATABASE
+            </button>
         </div>
 
         <div class="content-area">
             <div id="overview" class="section-content">
                 <div id="bookGrid" class="grid"></div>
+                <!-- Show All -->
                 <div id="showAllContainer" class="text-center mt-10 hidden">
-                    <button class="btn-premium px-10 py-3 bg-white/10 text-white font-bold rounded-2xl border border-white/20" onclick="toggleShowAll()">LOAD ALL RECORDS</button>
+                    <button class="btn-premium px-10 py-3 bg-white/10 text-white font-bold rounded-2xl shadow-xl border border-white/20" onclick="toggleShowAll()">
+                        LOAD ALL RECORDS <i class="fas fa-chevron-down ms-2"></i>
+                    </button>
                 </div>
             </div>
 
+            <!-- ADD DATA -->
             <div id="add-data" class="section-content hidden p-3">
                 <div class="max-w-3xl mx-auto p-8 rounded-[40px] bg-white text-dark shadow-2xl">
                     <h2 class="text-2xl font-black mb-6 border-b pb-4">New System Entry</h2>
@@ -124,11 +199,12 @@ body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--body-grad
                 </div>
             </div>
 
+            <!-- MANAGEMENT (All Original Buttons Kept) -->
             <div id="list-data" class="section-content hidden p-3">
                 <div class="p-6 rounded-[35px] bg-white/10 border border-white/20 backdrop-blur shadow-sm">
                     <div class="flex justify-between items-center mb-6">
-                        <h4 class="font-extrabold text-white m-0 uppercase text-xs">System Control Logs</h4>
-                        <button class="btn-premium bg-white/10 text-white px-4 py-2 rounded-xl border border-white/20" onclick="showSheetsModal()">SELECT PAGE</button>
+                        <h4 class="font-extrabold text-white m-0 uppercase text-xs tracking-widest">System Control Logs</h4>
+                        <button class="btn-premium bg-white/10 text-white px-4 py-2 rounded-xl font-bold text-sm border border-white/20" onclick="showSheetsModal()">SELECT PAGE</button>
                     </div>
                     <div id="listContainer"></div>
                 </div>
@@ -137,9 +213,11 @@ body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--body-grad
     </div>
 </div>
 
-<button id="mobileRefreshBtn" class="fixed bottom-6 right-6 w-16 h-16 bg-white/20 text-white rounded-full flex items-center justify-center btn-premium d-md-none z-[1000] border border-white/30 backdrop-blur hidden" onclick="refresh()">
+<!-- Floating Refresh Mobile (শুধুমাত্র ড্যাশবোর্ডে দেখাবে) -->
+<button id="mobileRefreshBtn" class="fixed bottom-6 right-6 w-16 h-16 bg-white/20 text-white rounded-full shadow-2xl flex items-center justify-center btn-premium d-md-none z-[1000] border border-white/30 backdrop-blur hidden" onclick="refresh()">
     <i class="fas fa-sync-alt fs-3"></i>
 </button>
+
 
 <!-- EDIT MODAL -->
 <div class="modal fade" id="editModal" tabindex="-1">
